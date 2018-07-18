@@ -1,29 +1,26 @@
-const express = require("express");
-const path = require("path");
-const Arena = require("./src/server/app");
-const routes = require("./src/server/views/routes");
+const express = require('express');
+const path = require('path');
+const Arena = require('./src/server/app');
+const routes = require('./src/server/views/routes');
 
 function run(config, listenOpts = {}) {
-    const { app, Queues } = Arena();
+  const {app, Queues} = Arena();
 
-    if (config) Queues.setConfig(config);
-    Queues.useCdn =
-        typeof listenOpts.useCdn !== "undefined" ? listenOpts.useCdn : true;
-    app.locals.title = listenOpts.title || "Arena";
-    app.locals.basePath = listenOpts.basePath || app.locals.basePath;
+  if (config) Queues.setConfig(config);
+  Queues.useCdn = typeof listenOpts.useCdn !== 'undefined' ? listenOpts.useCdn : true;
 
-    app.use(
-        app.locals.basePath,
-        express.static(path.join(__dirname, "public"))
-    );
-    app.use(app.locals.basePath, routes);
+  app.locals.basePath = listenOpts.basePath || app.locals.basePath;
+  app.locals.title = listenOpts.title || "Arena";
 
-    const port = listenOpts.port || 4567;
-    if (!listenOpts.disableListen) {
-        app.listen(port, () => console.log(`Arena is running on port ${port}`));
-    }
+  app.use(app.locals.basePath, express.static(path.join(__dirname, 'public')));
+  app.use(app.locals.basePath, routes);
 
-    return app;
+  const port = listenOpts.port || 4567;
+  if (!listenOpts.disableListen) {
+    app.listen(port, () => console.log(`Arena is running on port ${port}`));
+  }
+
+  return app;
 }
 
 if (require.main === module) run();
